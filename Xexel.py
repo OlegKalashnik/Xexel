@@ -75,16 +75,14 @@ class MyWin(QtWidgets.QMainWindow):
                 if art == str(ws2.cell(row=j, column=of_art_column).value).strip():
                     find = 1
                     if str(ws1.cell(row=i, column=nf_pr_column).value).strip() != str(ws2.cell(row=j, column=of_pr_column).value).strip():
-                        ws2.cell(row=j, column=of_npr_column).value = str(ws1.cell(row=i, column=nf_pr_column).value).strip()
-                        count_check += 1
                         # Заносим арт в словарь
                         count_change[art] = {ws2.cell(row=j, column=of_npr_column).value: str(ws1.cell(row=i, column=nf_pr_column).value)}
+                        ws2.cell(row=j, column=of_npr_column).value = str(ws1.cell(row=i, column=nf_pr_column).value).strip()
+                        count_check += 1
             if not find:
                 missing_arts.append(art)
         wb2.save(str(file2))
         self.results()
-
-        QMessageBox.showinfo("Готово", f"Поменяли {count_check} значений!")
 
 
     #Выводим текст результатов
@@ -283,9 +281,11 @@ class MyWin(QtWidgets.QMainWindow):
                     break
                 if art1 == str(ws2.cell(row=x, column=of_art_column).value).strip():
                     find = 1
-                    del_arts.append(art1)
-                    del_rows.append(x)
-                    count_del += 1
+                    if art1 not in del_arts:
+                        del_arts.append(art1)
+                    if x not in del_rows:
+                        del_rows.append(x)
+                        count_del += 1
             if find == 0:
                 missing_arts.append(art1)
                 not_find += 1
@@ -403,4 +403,3 @@ if __name__=="__main__":
     myapp = MyWin()
     myapp.show()
     sys.exit(app.exec_())
-
